@@ -1,2 +1,2 @@
 # MyOpenCSE
-Solution Open Source pour gérer votre Comité Spcial et Economique (CSE)
+Solution Open Source pour gérer votre Comité Social et Economique (CSE)
