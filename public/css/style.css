@@ -1,0 +1,231 @@
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+#sidebar{
+   position: absolute;
+   /* no float, no left or right */
+}
+.row-offcanvas-right {
+   left: 100%; /*instead of right xx...*/
+}
+.row-offcanvas-right.active {
+   left: 50%;  /*instead of right xx...*/
+}
+.sidemenu {
+    background: #404040;
+}
+
+.sidemenu a {
+    /*color: #404040;*/
+}
+
+
+.navbar {
+    padding: 15px 10px;
+    background: #fff;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 40px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-btn {
+    box-shadow: none;
+    outline: none !important;
+    border: none;
+}
+.home {
+    background: #384c60;
+    padding:0px;
+    margin: 0px;
+    min-height: 100vh;
+}
+/* ---------------------------------------------------
+    SIDEBAR STYLE
+----------------------------------------------------- */
+
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+    
+}
+
+body {
+    background-color: #efeae8;
+}
+/*#sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    background: #7386D5;
+    background: #313030;
+    color: #fff;
+    transition: all 0.3s;
+}*/
+
+#sidebar.active {
+    margin-left: -250px;
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    /*background: #6d7fcc;*/
+background: #ff4600;
+}
+
+#sidebar ul.components {
+    padding: 20px 0;
+    border-bottom: 1px solid #ff3600;
+}
+
+#sidebar ul p {
+    color: #6d7fcc;;
+    padding: 10px;
+}
+
+#sidebar ul li a {
+    padding: 10px;
+    font-size: 1.1em;
+    display: block;
+}
+
+#sidebar ul li a:hover {
+/*    color: #7386D5;*/
+    /*background: #fff;
+    color: #ff3600;
+    background: #4e4c4c;*/
+/*    color: #404040;
+    font-weight: bold;
+    background: #fff;
+     text-decoration: none;*/
+}
+
+
+#sidebar ul li.active>a,
+a[aria-expanded="true"] {
+    color: #fff;
+    /*background: #6d7fcc;*/
+background: #4e4c4c;
+}
+
+a[data-toggle="collapse"] {
+    position: relative;
+}
+
+/*.dropdown-toggle::after {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+}*/
+
+
+
+/* ---------------------------------------------------
+    CONTENT STYLE
+----------------------------------------------------- */
+
+#content {
+    width: 100%;
+    padding: 20px;
+    min-height: 100vh;
+    transition: all 0.3s;
+    background: #efeae8;
+}
+
+/* ---------------------------------------------------
+    MEDIAQUERIES
+----------------------------------------------------- */
+
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -250px;
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+    #sidebarCollapse span {
+        display: none;
+    }
+}
+
+
+.marge_btn_form {
+    margin: 10px;
+    padding: 10px;
+}
+/* ---------------------------------------------------
+    MEDIAQUERIES
+----------------------------------------------------- */
+
+/*!
+* Start Bootstrap - Simple Sidebar v6.0.3 (https://startbootstrap.com/template/simple-sidebar)
+* Copyright 2013-2021 Start Bootstrap
+* Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-simple-sidebar/blob/master/LICENSE)
+*/
+/*!
+ * Bootstrap v5.1.1 (https://getbootstrap.com/)
+ * Copyright 2011-2021 The Bootstrap Authors
+ * Copyright 2011-2021 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
+ */
+
+#wrapper {
+  overflow-x: hidden;
+}
+
+#sidebar-wrapper {
+  min-height: 100vh;
+  margin-left: -15rem;
+  transition: margin 0.25s ease-out;
+  width: 15rem;
+/*  background-color: #404040;*/
+}
+
+#sidebar-wrapper .sidebar-heading {
+  padding: 0.875rem 1.25rem;
+  font-size: 1.2rem;
+}
+
+.sidemenu {
+    padding: 0;
+    margin: 0;
+}
+
+.accordion-button {
+    /*background-color: #404040;*/
+    /*color: #ff4600;*/
+}
+
+.list-group-item {
+    /*background-color: #c6c6c6;*/
+}
+
+.list-group-item-primary.list-group-item-action.active {
+    /*background-color: #ff3600;*/
+}
+
+#page-content-wrapper {
+  min-width: 100vw;
+  margin-left: 0.875rem;
+  margin-top: 1.5rem;
+}
+
+body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
+  margin-left: 0;
+}
+
+@media (min-width: 768px) {
+  #sidebar-wrapper {
+    margin-left: 0;
+  }
+
+  #page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+  }
+
+  body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
+    margin-left: -15rem;
+  }
+  
+}
