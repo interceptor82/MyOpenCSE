@@ -48,7 +48,8 @@
                     <div class="col-md-4">
                         <div class="input-group">
                                 <span class="input-group-text"><?php echo icon('id-card-alt', 'sm', 'fontawesome'); ?></span>
-                            <?php echo form_dropdown('profile_id', $profile_options, set_value('profile', $user['profile_id']), 'class="form-select"') ?>
+                                <?php var_dump($user->getGroups); ?>
+                            <?php echo form_dropdown('profile_id', $profile_options, set_value('profile', ''), 'class="form-select"') ?>
                         </div>
                     </div>
                 </div>
