@@ -79,7 +79,13 @@ class Users extends BaseController {
             'navbar_active'     => 0,
             
         ];
-        
+        $profile_options = [1=>'superadmin', 2=>'admin', 3=>'developer', 4=>'user', 5=>'beta'];
+        $user_profiles = $this->user->getGroups();
+        foreach($user_profiles as $group){
+            if(in_array($group, $profile_options)){
+                unset($profile_options[array_search($group, $profile_options)]);
+            }
+        }
         return view('headers_view', $data)
                 .view('users_new_view', [
             'navbar_title'    => array(lang('Common.list'), lang('Common.new'), lang('Common.import'), lang('Common.export')),
@@ -90,7 +96,7 @@ class Users extends BaseController {
             'user'            => $this->user,
             'user_id'         => $user_id,
             'messages'        => $this->messages,
-            'profile_options' => ['superadmin', 'admin', 'developer', 'user', 'beta'],
+            'profile_options' => $profile_options,
             'user_privileges' => $this->session->get('user_privilege'),
             'active'          => $uri->getSegment(BASE_URI),
             'lang'            => $this->session->get('language'),

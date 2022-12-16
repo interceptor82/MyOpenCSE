@@ -44,12 +44,12 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label class="col-sm-2 col-form-label"><?php echo lang('Users.profile'); ?></label>
+                    <label class="col-sm-2 col-form-label"><?php echo lang('Users.available_profile'); ?></label>
                     <div class="col-md-4">
                         <div class="input-group">
                                 <span class="input-group-text"><?php echo icon('id-card-alt', 'sm', 'fontawesome'); ?></span>
-                                <?php var_dump($user->getGroups); ?>
-                            <?php echo form_dropdown('profile_id', $profile_options, set_value('profile', ''), 'class="form-select"') ?>
+                                <?php // var_dump($user->getGroups()); ?>
+                            <?php echo form_dropdown('profile', $profile_options, set_value('profile', ''), 'class="form-select" multiple') ?>
                         </div>
                     </div>
                 </div>

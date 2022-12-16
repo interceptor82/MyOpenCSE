@@ -28,7 +28,7 @@ return [
     "my_company"            => "Ma société",
     "profiles_features"     => "Profils utilisateur",
     "user_profile_details"  => "Définissez ici les accès de l'utilisateur",
-    "profile"               => "Profil",
+    "available_profile"               => "Profils disponibles",
     "users_management"      => "Gestion des utilisateurs",
     "users_import"          => "Import d'utilisateurs",
 ];
