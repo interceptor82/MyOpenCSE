@@ -52,6 +52,9 @@ function show_message($messages) {
 
 function icon($icon, $texte = null, $lien = null, $legende = null, $style = 'default', $popup = 0, $js = null, $formulaire = false, $navbar = false, $size = 'sm', $class = null, $typeicon = 'fas fa', $style_btn = null, $id = null) {
     switch ($size) {
+        case 'xs':
+            $img_size = 12;
+            break;
         case 'sm':
             $img_size = 16;
 

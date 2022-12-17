@@ -22,14 +22,14 @@
                     <label class="col-sm-2 col-form-label"><?php echo lang('Users.first_name'); ?></label>
                     <div class="col-md-4">
                         <div class="input-group">
-                                <span class="input-group-text"><?php echo icon('journal-text'); ?></span>
+                                <span class="input-group-text"><?php echo single_icon('user'); ?></span>
                             <?php echo form_input('first_name', set_value('first_name', $user->first_name), 'class="form-control"') ?>
                         </div>
                     </div>
                     <label class="col-sm-2 col-form-label"><?php echo lang('Users.last_name'); ?></label>
                     <div class="col-md-4">
                         <div class="input-group">
-                                <span class="input-group-text"><?php echo icon('journal-text'); ?></span>
+                                <span class="input-group-text"><?php echo single_icon('user'); ?></span>
                             <?php echo form_input('last_name', set_value('last_name', $user->last_name), 'class="form-control"') ?>
                         </div>
                     </div>
@@ -38,8 +38,8 @@
                     <label class="col-sm-2 col-form-label"><?php echo lang('Users.mail'); ?></label>
                     <div class="col-md-4">
                         <div class="input-group">
-                                <span class="input-group-text"><?php echo icon('envelope'); ?></span>
-                            <?php echo form_input('mail', set_value('secret', $user->secret?? ''), 'class="form-control"') ?>
+                                <span class="input-group-text"><?php echo single_icon('at'); ?></span>
+                            <?php echo form_input('mail', set_value('secret', $user_detail->secret?? ''), 'class="form-control"') ?>
                         </div>
                     </div>
                 </div>
@@ -47,9 +47,19 @@
                     <label class="col-sm-2 col-form-label"><?php echo lang('Users.available_profile'); ?></label>
                     <div class="col-md-4">
                         <div class="input-group">
-                                <span class="input-group-text"><?php echo icon('id-card-alt', 'sm', 'fontawesome'); ?></span>
+                                <span class="input-group-text"><?php echo single_icon('id-card-alt', 'sm'); ?></span>
                                 <?php // var_dump($user->getGroups()); ?>
                             <?php echo form_dropdown('profile', $profile_options, set_value('profile', ''), 'class="form-select" multiple') ?>
+                        </div>
+                    </div>
+                    <label class="col-sm-2 col-form-label"><?php echo lang('Users.available_profile'); ?></label>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                                <ul class="list-group">
+                                <?php foreach($user->getGroups() as $group){
+                                    echo '<li class="list-group-item">'.$group. icon('circle-minus', null, 'user/delete_profile', null, 'danger', 0, null, false, false, 'sm').'</li>';
+                                }
+                                ?>
                         </div>
                     </div>
                 </div>

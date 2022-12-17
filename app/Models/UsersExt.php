@@ -53,20 +53,6 @@ class UsersExt extends UserModel
         return $this->db->insertID();
     }
 
-    function delete_user_modules($id)
-    {
-        $builder = $this->db->table(DB_USERS_MODULES);
-        $builder->where('user_id', $id);
-        $builder->delete();
-    }
-
-    function update_order_products($data, $product_id, $order_id)
-    {
-        $builder = $this->db->table(DB_ORDERS_PRODUCTS);
-        $builder->where('order_id', $order_id);
-        $builder->where('product_id', $product_id);
-        $builder->update($data);
-    }
 
 //    function update_user($data, $user_id) {
 //        $builder = $this->db->table(DB_USERS);
@@ -75,23 +61,18 @@ class UsersExt extends UserModel
 //        return $this->db->affectedRows();
 //    }
 
-    function delete_order($id)
-    {
-        $builder = $this->db->table(DB_ORDERS);
-        $builder->where('id', $id);
-        $builder->delete();
-    }
 
     function get_users_fields()
     {
         return $this->db->getFieldNames(DB_USERS);
     }
 
-//    function get_user_by_id($id){
-//        $builder = $this->db->table(DB_USERS.' U');
-//        $builder->where('id', $id);
-//        return $builder->get();
-//    }
+    function get_user_by_id($id){
+        $builder = $this->db->table(DB_USERS.' U');
+        $builder->join(DB_AUTH_IDENTITIES.' AI', 'AI.id = U.id');
+        $builder->where('U.id', $id);
+        return $builder->get();
+    }
 //    function get_users($company_id, $profile_id=null){
 //        $builder = $this->db->table(DB_USERS.' U');
 //        $builder->select('U.id, U.first_name, U.last_name, U.mail, US.label_en, US.label_fr, P.label_en, P.label_fr, US.label_en, US.label_fr');
@@ -110,26 +91,6 @@ class UsersExt extends UserModel
 //        return $builder->get();
 //    }
 
-    function get_user3($reset_key, $mail = null)
-    {
-        $builder = $this->db->table(DB_USERS);
-        $builder->where('reset_pwd_key', $reset_key);
-        if (!is_null($mail)) $builder->where('mail', $mail);
-        return $builder->get();
-    }
-
-    function get_user_status_list($lang)
-    {
-        $builder = $this->db->table(DB_USERS_STATUS);
-        $query   = $builder->get();
-
-        //language
-        $label = 'label_' . $lang;
-        foreach ($query->getResult() as $row) {
-            $tab[$row->code] = $row->$label;
-        }
-        return $tab;
-    }
     
 
     function set_company($data)
@@ -138,18 +99,6 @@ class UsersExt extends UserModel
 
         $builder->insert($data);
         return $this->db->insertID();
-    }
-
-    //retrieve activation link to activate user account
-    function get_activation_link($activation_key)
-    {
-        $builder = $this->db->table(DB_USERS . ' U');
-        $builder->select('*', false);
-        $builder->select('U.id as user_id', false);
-        $builder->where('U.activation_key', $activation_key);
-        $builder->where('TIMESTAMPDIFF(HOUR, "' . date('Y-m-d H:i:s') . '", U.activation_date) <', 24, false);
-        $builder->where('U.status_code', 30);
-        return $builder->get();
     }
 
 }

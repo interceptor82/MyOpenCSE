@@ -56,7 +56,7 @@
                     '#', 
                     '#', 
                     'public/settings', 
-                    'public/users', 
+                    'users', 
                     'public/plugins'
                     ];
                 $legends = [
