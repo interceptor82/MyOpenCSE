@@ -95,6 +95,8 @@ define('EVENT_PRIORITY_HIGH', 10);
 
 defined('BASE_URI') || define('BASE_URI', '1');
 // Database tables
-defined('DB_COMPANY') || define('DB_COMPANY', 'company');
-defined('DB_USERS') || define('DB_USERS', 'users');
 defined('DB_AUTH_IDENTITIES') || define('DB_AUTH_IDENTITIES', 'auth_identities');
+defined('DB_COMPANY') || define('DB_COMPANY', 'company');
+defined('DB_COUNTRIES') || define('DB_COUNTRIES', 'countries');
+defined('DB_SITES') || define('DB_SITES', 'sites');
+defined('DB_USERS') || define('DB_USERS', 'users');

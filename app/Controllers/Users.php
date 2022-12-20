@@ -20,16 +20,18 @@ class Users extends BaseController
 
     public function __construct()
     {
-        $validation          = \Config\Services::validation();
-        $language            = \Config\Services::language();
-        $this->session       = \Config\Services::session();
+        $validation           = \Config\Services::validation();
+        $language             = \Config\Services::language();
+        $this->session        = \Config\Services::session();
         if ($this->session->has('language')) $language->setLocale($this->session->get('language'));
-        $this->UsersModel    = new UsersExt();
-        $this->users         = model('UserModel');
-        $this->user          = auth()->user();
-        $this->SettingsModel = new SettingsModel();
-        $this->encrypter     = \Config\Services::encrypter();
-        $this->uri           = new \CodeIgniter\HTTP\URI();
+        $this->UsersModel     = new UsersExt();
+        $this->CountriesModel = new \App\Models\Countries();
+        $this->SitesModel = new \App\Models\Sites();
+        $this->users          = model('UserModel');
+        $this->user           = auth()->user();
+        $this->SettingsModel  = new SettingsModel();
+        $this->encrypter      = \Config\Services::encrypter();
+        $this->uri            = new \CodeIgniter\HTTP\URI();
     }
 
     public function index()
@@ -75,34 +77,48 @@ class Users extends BaseController
             $user_id = null;
         }
 
-        $data            = [
+        $data              = [
             'title'         => lang('Users.title'),
             'navbar_title'  => array(lang('Home.list'), lang('Home.new'), lang('Home.import'), lang('Home.export')),
-            'navbar_link'   => array(base_url() . '/public/users', base_url() . '/public/users/create', base_url() . '/public/users/import/13', base_url() . '/public/users/export'),
+            'navbar_link'   => array(base_url() . '/users', base_url() . '/users/create', base_url() . '/users/import/13', base_url() . '/users/export'),
             'navbar_active' => 0,
         ];
-        $profile_options = [1 => 'superadmin', 2 => 'admin', 3 => 'developer', 4 => 'user', 5 => 'beta'];
-        $user_profiles   = $this->user->getGroups();
+        $profile_options   = ['superadmin' => lang('Users.superadmin'), 'admin' => lang('Users.admin'), 'developer' => lang('Users.developer'), 'user' => lang('Users.user'), 'beta' => lang('Users.beta')];
+        $profiles_affected = $profile_options;
+        $user_profiles     = $this->user->getGroups();
         foreach ($user_profiles as $group) {
-            if (in_array($group, $profile_options)) {
-                unset($profile_options[array_search($group, $profile_options)]);
+            if (array_key_exists($group, $profile_options)) {
+                unset($profile_options[$group]);
             }
         }
+        $countries_query = $this->CountriesModel->get_countries();
+        foreach ($countries_query as $country) {
+            $countries_list[$country->alpha2] = $country->name_fr;
+        }
+        
+        $sites_query = $this->SitesModel->get_sites($this->user->company_id);
+        foreach ($sites_query as $site) {
+            $site_options[$country->id] = $country->name;
+        }
+
         return view('headers_view', $data)
                 . view('users_new_view', [
-                    'navbar_title'    => array(lang('Common.list'), lang('Common.new'), lang('Common.import'), lang('Common.export')),
-                    'navbar_link'     => array(base_url() . '/public/users', base_url() . '/public/users/create', base_url() . '/public/users/import/' . $this->encrypter->encrypt(13), base_url() . '/public/users/export'),
-                    'navbar_active'   => 1,
-                    'navbar_actions'  => array(icon('hdd-fill', ' ' . lang('Common.save'), null, lang('Common.save'), 'success', 0, null, true, true)),
-                    'validation'      => $this->validator,
-                    'user'            => $this->user,
-                    'user_detail' => $this->UsersModel->get_user_by_id($user_id)->getRow(),
-                    'user_id'         => $user_id,
-                    'messages'        => $this->messages,
-                    'profile_options' => $profile_options,
-                    'user_privileges' => $this->session->get('user_privilege'),
-                    'active'          => $uri->getSegment(BASE_URI),
-                    'lang'            => $this->session->get('language'),
+                    'navbar_title'      => array(lang('Common.list'), lang('Common.new'), lang('Common.import'), lang('Common.export')),
+                    'navbar_link'       => array(base_url() . '/users', base_url() . '/users/create', base_url() . '/users/import/' . bin2hex($this->encrypter->encrypt(13)), base_url() . '/users/export'),
+                    'navbar_active'     => 1,
+                    'navbar_actions'    => array(icon('hdd-fill', ' ' . lang('Common.save'), null, lang('Common.save'), 'success', 0, null, true, true)),
+                    'validation'        => $this->validator,
+                    'user'              => $this->user,
+                    'user_detail'       => $this->UsersModel->get_user_by_id($user_id)->getRow(),
+                    'user_id'           => $user_id,
+                    'messages'          => $this->messages,
+                    'profile_options'   => $profile_options,
+                    'site_options'      => $site_options?? '',
+                    'profiles_affected' => $profiles_affected,
+                    'user_privileges'   => $this->session->get('user_privilege'),
+                    'active'            => $uri->getSegment(BASE_URI),
+                    'lang'              => $this->session->get('language'),
+                    'countries'         => $countries_list
                 ])
                 . view('footer_view');
     }
@@ -408,6 +424,85 @@ class Users extends BaseController
         $users->delete($user_id, true);
 
         return redirect()->to('/users');
+    }
+
+    public function add()
+    {
+        if (!$this->validate([
+                    'first_name' => ['label' => lang('Users.first_name'), 'rules' => "max_length[255]"],
+                    'last_name'  => ['label' => lang('Users.last_name'), 'rules' => "required|max_length[255]"],
+                    'email'      => ['label' => lang('Users.mail'), 'rules' => "required|valid_email|max_length[255]"],
+                    'username'   => ['label' => lang('Users.username'), 'rules' => "max_length[30]"],
+                    'profile.*'  => ['label' => lang('Users.profile'), 'rules' => "max_length[255]"],
+                ])) {
+            return $this->create();
+        } else {
+            try {
+                //activation key
+                $key = bin2hex(Encryption::createKey(32));
+
+                $user_id   = $this->request->getPost('user_id');
+                $data_user = [
+                    'first_name' => $this->request->getPost('first_name'),
+                    'last_name'  => $this->request->getPost('last_name'),
+//                    'mail'            => $this->request->getPost('mail'),
+//                    'id'              => $this->request->getPost('user_id'),
+//                    'status_code'     => 30,
+//                    'profile_id'      => $this->request->getPost('profile_id'),
+//                    'company_id'      => $this->session->get('company_id'),
+//                    'activation_key'  => $key,
+//                    'activation_date' => date('Y-m-d H:i:s'),
+                ];
+//                $data_user['password'] = password_hash(bin2hex(Encryption::createKey(16)), PASSWORD_ARGON2I); //useless but better than null
+                if (empty($user_id)) {
+                    //add user
+//                    $user_id = $this->UsersModel->set_user($data_user);
+//
+//                    //send mail activation
+//                    $email = \Config\Services::email();
+//
+//                    $email->setFrom('support@myminierp.com', 'MyMiniERP');
+//                    $email->setTo($this->request->getPost('mail'));
+//                    $email->setSubject(lang('Login.mail_activation_subject'));
+//                    $email->setMessage(lang('Login.mail_activation_message') . '<a href="' . base_url() . '/public/login/activate_user/' . $key . '">' . base_url() . '/public/login/activate_user/' . $key . '</a><br /><br />' . lang('Login.mail_activation_message2'));
+//
+//                    $email->send();
+//
+//                    $this->messages['success'] = lang('Users.activation_mail_sent');
+                } else {
+                    //update user (Ext model)
+                    $this->UsersModel->update($user_id, $data_user);
+
+                    $user = $this->users->findById($user_id);
+
+                    $user->fill([
+                        'username' => $this->request->getPost('username'),
+                        'email'    => $this->request->getPost('email'),
+//    'password' => 'secret123'
+                    ]);
+                    $this->users->save($user);
+                    // Adding user to groups
+                    if (is_array($this->request->getPost('profile'))) {
+
+                        foreach ($this->request->getPost('profile') as $profile) {
+                            $this->user->addGroup($profile);
+                        }
+                    }
+
+                    $this->messages['success'] = lang('Common.saved_changes');
+                }
+            } catch (Exception $ex) {
+                $this->messages['danger'] = lang('Users.user_creation_error') . $e->getMessage();
+            }
+            return $this->create($user_id);
+        }
+    }
+
+    function delete_profile($encrypted_profile)
+    {
+        $this->user->removeGroup($this->encrypter->decrypt(hex2bin($encrypted_profile)));
+        $this->messages['success'] = lang('Users.profile_deleted');
+        return redirect()->back()->with('messages', $this->messages['success']);
     }
 
 }

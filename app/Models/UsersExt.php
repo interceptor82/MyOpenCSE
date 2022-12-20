@@ -11,7 +11,9 @@ class UsersExt extends UserModel
 
     protected $returnType    = \CodeIgniter\Shield\Entities\User::class;
     protected $allowedFields = [
-        'company_id'
+        'company_id',
+        'first_name',
+        'last_name',
     ];
 
     function getDatatableUsers($start, $length, $order, $dir, $company_id, $filter = null)
@@ -69,7 +71,7 @@ class UsersExt extends UserModel
 
     function get_user_by_id($id){
         $builder = $this->db->table(DB_USERS.' U');
-        $builder->join(DB_AUTH_IDENTITIES.' AI', 'AI.id = U.id');
+        $builder->join(DB_AUTH_IDENTITIES.' AI', 'AI.user_id = U.id');
         $builder->where('U.id', $id);
         return $builder->get();
     }
