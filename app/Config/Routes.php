@@ -44,6 +44,7 @@ $routes->get('users/delete/(:num)', 'Users::delete_user/$1');
 $routes->get('users/edit/(:segment)', 'Users::edit/$1');
 $routes->post('users/add', 'Users::add');
 $routes->get('users/delete_profile/(:segment)', 'Users::delete_profile/$1');
+$routes->post('sites/add', 'Sites::add');
 service('auth')->routes($routes);
 
 /*

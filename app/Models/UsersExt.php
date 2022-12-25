@@ -11,9 +11,22 @@ class UsersExt extends UserModel
 
     protected $returnType    = \CodeIgniter\Shield\Entities\User::class;
     protected $allowedFields = [
-        'company_id',
+        'username',
+        'civility',
+        'birthdate',
         'first_name',
         'last_name',
+        'address',
+        'address2',
+        'address3',
+        'zipcode',
+        'city',
+        'country_id',
+        'site_id',
+        'company_id',
+        'updated_at',
+        'entre_date',
+        'release_date'
     ];
 
     function getDatatableUsers($start, $length, $order, $dir, $company_id, $filter = null)

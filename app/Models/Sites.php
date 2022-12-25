@@ -13,7 +13,7 @@ class Sites extends Model
     protected $useAutoIncrement = true;
     protected $returnType       = 'object';
     protected $allowedFields    = [
-        'name', 'address', 'address2', 'address3', 'zipcode', 'city', 'country'
+        'name', 'address', 'address2', 'address3', 'zipcode', 'city', 'country', 'company_id'
     ];
 
     function get_sites(int $company_id): array

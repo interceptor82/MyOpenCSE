@@ -92,12 +92,8 @@ function icon($icon, $texte = null, $lien = null, $legende = null, $style = 'def
     }
 }
 
-function single_icon($icon, $size = 'sm', $injavascript = false) {
-    if ($injavascript == false) {
-        return '<span class="fa-solid fa-'.$icon.' fa-'.$size.'"></span>';
-    } else {
-        return '<img src=\"' . base_url() . '/app/ThirdParty/' . $chemin . '/' . $icon . '.svg\" width=\"' . $img_size . '\" height=\"' . $img_size . '\">';
-    }
+function single_icon($icon, $size = 'sm', $color='') {
+        return '<span class="fa-solid fa-'.$icon.' fa-'.$size.' " style="color: '.$color.';"></span>';
 }
 
 function getVersion()

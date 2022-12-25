@@ -49,5 +49,6 @@ return [
     "qty"             => "Quantité",
     "scan"=> "Scanner les articles",
     "no_template"           => "Aucun modèle n'est défini, veuillez d'abord définir un modèle dans les paramètres.",
-    "back"=> "Retour"
+    "back"=> "Retour",
+    "close" => "Fermer"
 ];

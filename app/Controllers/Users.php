@@ -20,13 +20,13 @@ class Users extends BaseController
 
     public function __construct()
     {
-        $validation           = \Config\Services::validation();
+        $this->validation     = \Config\Services::validation();
         $language             = \Config\Services::language();
         $this->session        = \Config\Services::session();
         if ($this->session->has('language')) $language->setLocale($this->session->get('language'));
         $this->UsersModel     = new UsersExt();
         $this->CountriesModel = new \App\Models\Countries();
-        $this->SitesModel = new \App\Models\Sites();
+        $this->SitesModel     = new \App\Models\Sites();
         $this->users          = model('UserModel');
         $this->user           = auth()->user();
         $this->SettingsModel  = new SettingsModel();
@@ -93,12 +93,12 @@ class Users extends BaseController
         }
         $countries_query = $this->CountriesModel->get_countries();
         foreach ($countries_query as $country) {
-            $countries_list[$country->alpha2] = $country->name_fr;
+            $countries_list[$country->id] = $country->name_fr;
         }
-        
+
         $sites_query = $this->SitesModel->get_sites($this->user->company_id);
         foreach ($sites_query as $site) {
-            $site_options[$country->id] = $country->name;
+            $site_options[$site->id] = $site->name;
         }
 
         return view('headers_view', $data)
@@ -107,13 +107,13 @@ class Users extends BaseController
                     'navbar_link'       => array(base_url() . '/users', base_url() . '/users/create', base_url() . '/users/import/' . bin2hex($this->encrypter->encrypt(13)), base_url() . '/users/export'),
                     'navbar_active'     => 1,
                     'navbar_actions'    => array(icon('hdd-fill', ' ' . lang('Common.save'), null, lang('Common.save'), 'success', 0, null, true, true)),
-                    'validation'        => $this->validator,
+                    'validation'        => $this->validation,
                     'user'              => $this->user,
                     'user_detail'       => $this->UsersModel->get_user_by_id($user_id)->getRow(),
                     'user_id'           => $user_id,
                     'messages'          => $this->messages,
                     'profile_options'   => $profile_options,
-                    'site_options'      => $site_options?? '',
+                    'site_options'      => $site_options ?? '',
                     'profiles_affected' => $profiles_affected,
                     'user_privileges'   => $this->session->get('user_privilege'),
                     'active'            => $uri->getSegment(BASE_URI),
@@ -429,23 +429,38 @@ class Users extends BaseController
     public function add()
     {
         if (!$this->validate([
-                    'first_name' => ['label' => lang('Users.first_name'), 'rules' => "max_length[255]"],
-                    'last_name'  => ['label' => lang('Users.last_name'), 'rules' => "required|max_length[255]"],
-                    'email'      => ['label' => lang('Users.mail'), 'rules' => "required|valid_email|max_length[255]"],
-                    'username'   => ['label' => lang('Users.username'), 'rules' => "max_length[30]"],
-                    'profile.*'  => ['label' => lang('Users.profile'), 'rules' => "max_length[255]"],
+                    'first_name'   => ['label' => lang('Users.first_name'), 'rules' => "permit_empty|max_length[255]"],
+                    'last_name'    => ['label' => lang('Users.last_name'), 'rules' => "permit_empty|max_length[255]"],
+                    'email'        => ['label' => lang('Users.mail'), 'rules' => "required|valid_email|max_length[255]"],
+                    'username'     => ['label' => lang('Users.username'), 'rules' => "max_length[30]"],
+                    'profile.*'    => ['label' => lang('Users.profile'), 'rules' => "max_length[255]"],
+                    'address'      => ['label' => lang('Users.address'), 'rules' => "permit_empty|max_length[255]"],
+                    'address2'     => ['label' => lang('Users.address2'), 'rules' => "permit_empty|max_length[255]"],
+                    'address3'     => ['label' => lang('Users.address3'), 'rules' => "permit_empty|max_length[255]"],
+                    'zipcode'      => ['label' => lang('Users.zipcode'), 'rules' => "permit_empty|max_length[255]"],
+                    'city'         => ['label' => lang('Users.city'), 'rules' => "permit_empty|max_length[255]"],
+                    'country_id'   => ['label' => lang('Users.country_id'), 'rules' => "required"],
+                    'entry_date'   => ['label' => lang('Users.entry_date'), 'rules' => "permit_empty|max_length[255]"],
+                    'release_date' => ['label' => lang('Users.release_date'), 'rules' => "permit_empty|max_length[255]"],
                 ])) {
             return $this->create();
         } else {
             try {
-                //activation key
-                $key = bin2hex(Encryption::createKey(32));
-
                 $user_id   = $this->request->getPost('user_id');
                 $data_user = [
-                    'first_name' => $this->request->getPost('first_name'),
-                    'last_name'  => $this->request->getPost('last_name'),
-//                    'mail'            => $this->request->getPost('mail'),
+                    'first_name'   => $this->request->getPost('first_name'),
+                    'last_name'    => $this->request->getPost('last_name'),
+                    'country_id'   => $this->request->getPost('country'),
+                    'email'        => $this->request->getPost('email'),
+                    'site_id'      => $this->request->getPost('site'),
+                    'address'      => $this->request->getPost('address'),
+                    'address2'     => $this->request->getPost('address2'),
+                    'address3'     => $this->request->getPost('address3'),
+                    'zipcode'      => $this->request->getPost('zipcode'),
+                    'city'         => $this->request->getPost('city'),
+                    'country_id'   => $this->request->getPost('country_id'),
+                    'entry_date'   => $this->request->getPost('entry_date'),
+                    'release_date' => $this->request->getPost('release_date'),
 //                    'id'              => $this->request->getPost('user_id'),
 //                    'status_code'     => 30,
 //                    'profile_id'      => $this->request->getPost('profile_id'),
@@ -476,9 +491,18 @@ class Users extends BaseController
                     $user = $this->users->findById($user_id);
 
                     $user->fill([
-                        'username' => $this->request->getPost('username'),
-                        'email'    => $this->request->getPost('email'),
-//    'password' => 'secret123'
+                        'username'     => $this->request->getPost('username'),
+                        'email'        => $this->request->getPost('email'),
+                        'country_id'   => $this->request->getPost('country'),
+                        'site_id'      => $this->request->getPost('site'),
+                        'address'      => $this->request->getPost('address'),
+                        'address2'     => $this->request->getPost('address2'),
+                        'address3'     => $this->request->getPost('address3'),
+                        'zipcode'      => $this->request->getPost('zipcode'),
+                        'city'         => $this->request->getPost('city'),
+                        'country_id'   => $this->request->getPost('country_id'),
+                        'entry_date'   => $this->request->getPost('entry_date'),
+                        'release_date' => $this->request->getPost('release_date'),
                     ]);
                     $this->users->save($user);
                     // Adding user to groups

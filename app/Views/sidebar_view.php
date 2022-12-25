@@ -152,7 +152,7 @@
                 </div>
             </div>
         <?php endif; ?>
-        <?php if ($user->inGroup('superadmin')) : ?>
+        <?php if ($user->inGroup('superadmin', 'admin', 'developer')) : ?>
             <div class="accordion-item">
                 <h2 class="accordion-header" id="flush-headingNine">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine">
