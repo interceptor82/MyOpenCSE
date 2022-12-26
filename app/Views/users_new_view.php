@@ -12,16 +12,50 @@
             echo show_message($messages);
             if (!empty($user_id)) echo form_hidden('user_id', $user_id);
             ?>
-            <ul class="nav nav-tabs" id="TabUsers" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="new-user-tab" data-bs-toggle="tab" data-bs-target="#new-user-pane" type="button" role="tab" aria-controls="new-user-pane" aria-selected="true">Home</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#family-pane" type="button" role="tab" aria-controls="family-pane" aria-selected="false">Profile</button>
-                </li>
-            </ul>
-            <div class="tab-content" id="TabUsersContent">
-                <div class="tab-pane fade show active" id="new-user-pane" role="tabpanel" aria-labelledby="new-user-tab" tabindex="0">
+            <!--<div class="m-3">-->
+<!--        <ul class="nav nav-tabs" id="myTab">
+            <li class="nav-item">
+                <a href="#sectionA" class="nav-link active" data-bs-toggle="tab">Section A</a>
+            </li>
+            <li class="nav-item">
+                <a href="#sectionB" class="nav-link" data-bs-toggle="tab">Section B</a>
+            </li>
+            <li class="nav-item">
+                <a href="#sectionC" class="nav-link" data-bs-toggle="tab">Section C</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div id="sectionA" class="tab-pane fade show active">
+                <h3>Section A</h3>
+                <p>Aliquip placeat salvia cillum iphone...</p>
+            </div>
+            <div id="sectionB" class="tab-pane fade">
+                <h3>Section B</h3>
+                <p>Vestibulum nec erat eu nulla rhoncus fringilla...</p>
+            </div>
+            <div id="sectionC" class="tab-pane fade">
+                <h3>Section C</h3>
+                <p>Nullam hendrerit justo non leo aliquet...</p>
+            </div>
+        </div>
+    </div>    -->
+            
+            
+            
+            
+            
+            
+            <div class="m-3">
+            <ul class="nav nav-tabs" id="TabUsers">
+            <li class="nav-item">
+                <a href="#new-user-pane" class="nav-link active" data-bs-toggle="tab">Section A</a>
+            </li>
+            <li class="nav-item">
+                <a href="#family-pane" class="nav-link" data-bs-toggle="tab">Section B</a>
+            </li>
+        </ul>
+            <div class="tab-content">
+            <div id="new-user-pane" class="tab-pane fade show active">
 
 
                     <div class="alert alert-info" role="alert">
@@ -54,14 +88,14 @@
                         <div class="col-md-4">
                             <div class="input-group">
                                 <span class="input-group-text"><?php echo single_icon('user'); ?></span>
-                                <?php echo form_input('first_name', set_value('first_name', $user->first_name), 'class="form-control"') ?>
+                                <?php echo form_input('first_name', set_value('first_name', $user->first_name?? ''), 'class="form-control"') ?>
                             </div>
                         </div>
                         <label class="col-sm-2 col-form-label"><?php echo lang('Users.last_name'); ?></label>
                         <div class="col-md-4">
                             <div class="input-group">
                                 <span class="input-group-text"><?php echo single_icon('user'); ?></span>
-                                <?php echo form_input('last_name', set_value('last_name', $user->last_name), 'class="form-control"') ?>
+                                <?php echo form_input('last_name', set_value('last_name', $user->last_name?? ''), 'class="form-control"') ?>
                             </div>
                         </div>
                     </div>
@@ -271,7 +305,7 @@
                     <?php echo form_close(); ?>
                 </div>
             </div>
-            <div class="tab-pane fade" id="family-pane" role="tabpanel" aria-labelledby="family-tab" tabindex="0">
+            <div id="family-pane" class="tab-pane fade show active">
                 <?php echo form_open('users/add_family'); ?>
                 <div class="alert alert-info" role="alert">
                     <p class="mb-0"><?php echo lang('Users.family_details'); ?></p>
@@ -294,6 +328,7 @@
                 </div>
                 <?php echo form_close(); ?>
             </div>
+            </div>
 
             <script type="text/javascript">
                 $(document).ready(function () {
@@ -310,21 +345,30 @@
                     $('#datepicker3').datepicker({language: 'fr'});
                 });
             </script>
-            <script type="text/javascript">
-            $(document).ready(function () {
-
-                $('a[data-bs-toggle="tab"]').on('show.bs.tab', function (e) {
-                    localStorage.setItem('activeTab', $(e.target).attr('href'));
-                });
-
-                var activeTab = localStorage.getItem('activeTab');
-
-                if (activeTab) {
-                    $('#TabUsers a[href="' + activeTab + '"]').tab('show');
-                }
-
-            });
-        </script>
+            <script>
+$(document).ready(function(){
+    $('a[data-bs-toggle="tab"]').on('show.bs.tab', function(e) {
+        localStorage.setItem('activeTab', $(e.target).attr('href'));
+    });
+    var activeTab = localStorage.getItem('activeTab');
+    if(activeTab){
+        $('#tabUsers a[href="' + activeTab + '"]').tab('show');
+    }
+});
+</script>
+        
+<!--        <script>
+$(document).ready(function(){
+    $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+        localStorage.setItem('activeTab', $(e.target).attr('href'));
+    });
+    var activeTab = localStorage.getItem('activeTab');
+    if(activeTab){
+        $('#myTab a[href="' + activeTab + '"]').tab('show');
+    }
+});
+</script>-->
+        
 
             </body>
             </html>

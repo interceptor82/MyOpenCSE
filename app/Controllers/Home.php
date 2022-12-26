@@ -46,7 +46,7 @@ class Home extends BaseController
                 . view('footer_view');
     }
 
-    private function complete_registration()
+    public function complete_registration()
     {
         $user = auth()->user();
 
